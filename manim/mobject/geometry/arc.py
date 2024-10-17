@@ -129,7 +129,7 @@ class TipableVMobject(VMobject, metaclass=ConvertToOpenGL):
         tip_length: float = None,
         tip_width: float = None,
         at_start: bool = False,
-    ):
+    ) -> tips.ArrowTip | tips.ArrowTriangleFilledTip:
         """Stylises the tip, positions it spatially, and returns
         the newly instantiated tip to the caller.
         """
@@ -142,7 +142,7 @@ class TipableVMobject(VMobject, metaclass=ConvertToOpenGL):
         tip_shape: type[tips.ArrowTip] | None = None,
         tip_length: float | None = None,
         tip_width: float | None = None,
-    ):
+    ) -> tips.ArrowTip | tips.ArrowTriangleFilledTip:
         """Returns a tip that has been stylistically configured,
         but has not yet been given a position in space.
         """
@@ -166,7 +166,11 @@ class TipableVMobject(VMobject, metaclass=ConvertToOpenGL):
         tip = tip_shape(length=tip_length, **style)
         return tip
 
-    def position_tip(self, tip: tips.ArrowTip, at_start: bool = False):
+    def position_tip(
+        self,
+        tip: tips.ArrowTip,
+        at_start: bool = False,
+    ) -> tips.ArrowTip | tips.ArrowTriangleFilledTip:
         # Last two control points, defining both
         # the end, and the tangency direction
         if at_start:
@@ -193,7 +197,11 @@ class TipableVMobject(VMobject, metaclass=ConvertToOpenGL):
         tip.shift(anchor - tip.tip_point)
         return tip
 
-    def reset_endpoints_based_on_tip(self, tip: tips.ArrowTip, at_start: bool) -> Self:
+    def reset_endpoints_based_on_tip(
+        self,
+        tip: tips.ArrowTip,
+        at_start: bool,
+    ) -> Self:
         if self.get_length() == 0:
             # Zero length, put_start_and_end_on wouldn't work
             return self
@@ -244,7 +252,7 @@ class TipableVMobject(VMobject, metaclass=ConvertToOpenGL):
             result.add(self.start_tip)
         return result
 
-    def get_tip(self):
+    def get_tip(self) -> VMobject:
         """Returns the TipableVMobject instance's (first) tip,
         otherwise throws an exception.
         """
@@ -303,7 +311,7 @@ class Arc(TipableVMobject):
         num_components: int = 9,
         arc_center: Point3D = ORIGIN,
         **kwargs,
-    ):
+    ) -> None:
         if radius is None:  # apparently None is passed by ArcBetweenPoints
             radius = 1.0
         self.radius = radius

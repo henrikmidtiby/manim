@@ -73,7 +73,7 @@ class Polygram(VMobject, metaclass=ConvertToOpenGL):
 
     def __init__(
         self, *vertex_groups: Point3D, color: ParsableManimColor = BLUE, **kwargs
-    ):
+    ) -> None:
         super().__init__(color=color, **kwargs)
 
         for vertices in vertex_groups:
@@ -611,7 +611,7 @@ class Rectangle(Polygon):
         mark_paths_closed: bool = True,
         close_new_points: bool = True,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(UR, UL, DL, DR, color=color, **kwargs)
         self.stretch_to_fit_width(width)
         self.stretch_to_fit_height(height)
@@ -685,11 +685,11 @@ class Square(Rectangle):
         super().__init__(height=side_length, width=side_length, **kwargs)
 
     @property
-    def side_length(self):
+    def side_length(self) -> float:
         return np.linalg.norm(self.get_vertices()[0] - self.get_vertices()[1])
 
     @side_length.setter
-    def side_length(self, value):
+    def side_length(self, value) -> None:
         self.scale(value / self.side_length)
 
 
@@ -717,7 +717,7 @@ class RoundedRectangle(Rectangle):
                 self.add(rect_group)
     """
 
-    def __init__(self, corner_radius: float | list[float] = 0.5, **kwargs):
+    def __init__(self, corner_radius: float | list[float] = 0.5, **kwargs) -> None:
         super().__init__(**kwargs)
         self.corner_radius = corner_radius
         self.round_corners(self.corner_radius)
