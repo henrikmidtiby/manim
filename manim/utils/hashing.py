@@ -238,7 +238,7 @@ class _CustomEncoder(json.JSONEncoder):
     def _cleaned_iterable(self, iterable: dict[Any, Any]) -> dict[Any, Any]: ...
 
     @overload
-    def _cleaned_iterable(self, iterable: Sequence) -> list[Any]: ...
+    def _cleaned_iterable(self, iterable: Sequence[Any]) -> list[Any]: ...
 
     def _cleaned_iterable(self, iterable: Iterable) -> dict[Any, Any] | list[Any]:
         """Check for circular reference at each iterable that will go through the JSONEncoder, as well as key of the wrong format.
@@ -255,9 +255,9 @@ class _CustomEncoder(json.JSONEncoder):
         def _key_to_hash(key: Any) -> int:
             return zlib.crc32(json.dumps(key, cls=_CustomEncoder).encode())
 
-        def _iter_check_list(lst: Iterable[Any]) -> list[Any]:
+        def _iter_check_list(lst: Sequence[Any]) -> list[Any]:
             processed_list = []
-            for el in lst:
+            for _i, el in enumerate(lst):
                 el = _Memoizer.check_already_processed(el)
                 if isinstance(el, dict):
                     new_value = _iter_check_dict(el)
