@@ -46,7 +46,11 @@ def always(method: Callable, *args: Any, **kwargs: Any) -> Mobject | OpenGLMobje
     return mobject
 
 
-def f_always(method: Callable[[M], None], *arg_generators, **kwargs) -> M:
+def f_always(
+    method: Callable[[M], None],
+    *arg_generators: Callable[[], dict[str, Any]],
+    **kwargs: Any,
+) -> M:
     """
     More functional version of always, where instead
     of taking in args, it takes in functions which output
@@ -56,7 +60,7 @@ def f_always(method: Callable[[M], None], *arg_generators, **kwargs) -> M:
     mobject = method.__self__
     func = method.__func__
 
-    def updater(mob: Mobject | OpenGLMobject) -> None:
+    def updater(mob: M) -> None:
         args = [arg_generator() for arg_generator in arg_generators]
         func(mob, *args, **kwargs)
 
@@ -148,7 +152,7 @@ def always_shift(
     return mobject
 
 
-def always_rotate(mobject: M, rate: float = 20 * DEGREES, **kwargs) -> M:
+def always_rotate(mobject: M, rate: float = 20 * DEGREES, **kwargs: Any) -> M:
     """A mobject which is continuously rotated at a certain rate.
 
     Parameters
