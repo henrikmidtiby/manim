@@ -16,7 +16,7 @@ __all__ = [
 
 import inspect
 from collections.abc import Callable
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 import numpy as np
 
@@ -38,7 +38,7 @@ def assert_is_mobject_method(method: Callable) -> None:
     assert isinstance(mobject, (Mobject, OpenGLMobject))
 
 
-def always(method: Callable, *args, **kwargs) -> Mobject:
+def always(method: Callable, *args: Any, **kwargs: Any) -> Mobject | OpenGLMobject:
     assert_is_mobject_method(method)
     mobject = method.__self__
     func = method.__func__
@@ -56,7 +56,7 @@ def f_always(method: Callable[[M], None], *arg_generators, **kwargs) -> M:
     mobject = method.__self__
     func = method.__func__
 
-    def updater(mob):
+    def updater(mob: Mobject | OpenGLMobject) -> None:
         args = [arg_generator() for arg_generator in arg_generators]
         func(mob, *args, **kwargs)
 
@@ -182,8 +182,8 @@ def always_rotate(mobject: M, rate: float = 20 * DEGREES, **kwargs) -> M:
 
 
 def turn_animation_into_updater(
-    animation: Animation, cycle: bool = False, delay: float = 0, **kwargs
-) -> Mobject:
+    animation: Animation, cycle: bool = False, delay: float = 0, **kwargs: Any
+) -> Mobject | OpenGLMobject:
     """
     Add an updater to the animation's mobject which applies
     the interpolation and update functions of the animation
@@ -214,7 +214,7 @@ def turn_animation_into_updater(
     animation.begin()
     animation.total_time = -delay
 
-    def update(m: Mobject, dt: float):
+    def update(m: Mobject, dt: float) -> None:
         if animation.total_time >= 0:
             run_time = animation.get_run_time()
 
@@ -244,5 +244,5 @@ def turn_animation_into_updater(
     return mobject
 
 
-def cycle_animation(animation: Animation, **kwargs) -> Mobject:
+def cycle_animation(animation: Animation, **kwargs: Any) -> Mobject | OpenGLMobject:
     return turn_animation_into_updater(animation, cycle=True, **kwargs)
