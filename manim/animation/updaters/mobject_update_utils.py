@@ -40,7 +40,7 @@ def assert_is_mobject_method(method: Callable) -> None:
 
 def always(method: Callable, *args: Any, **kwargs: Any) -> Mobject | OpenGLMobject:
     assert_is_mobject_method(method)
-    mobject = method.__self__
+    mobject: Mobject | OpenGLMobject = method.__self__
     func = method.__func__
     mobject.add_updater(lambda m: func(m, *args, **kwargs))
     return mobject
@@ -57,7 +57,7 @@ def f_always(
     the relevant arguments.
     """
     assert_is_mobject_method(method)
-    mobject = method.__self__
+    mobject: M = method.__self__
     func = method.__func__
 
     def updater(mob: M) -> None:
